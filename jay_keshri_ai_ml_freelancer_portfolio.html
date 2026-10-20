@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jay Keshri | AI & ML Freelance Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: 'var(--brand-primary)',
+                            light: 'var(--brand-light)',
+                            glow: 'var(--brand-glow)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --brand-primary: #6366f1; /* Indigo 500 */
+            --brand-light: #818cf8;   /* Indigo 400 */
+            --brand-glow: rgba(99, 102, 241, 0.25);
+        }
+
+        /* Theme presets controlled via JS */
+        [data-accent="emerald"] {
+            --brand-primary: #10b981;
+            --brand-light: #34d399;
+            --brand-glow: rgba(16, 185, 129, 0.25);
+        }
+        [data-accent="cyan"] {
+            --brand-primary: #06b6d4;
+            --brand-light: #22d3ee;
+            --brand-glow: rgba(6, 182, 212, 0.25);
+        }
+        [data-accent="rose"] {
+            --brand-primary: #f43f5e;
+            --brand-light: #fb7185;
+            --brand-glow: rgba(244, 63, 94, 0.25);
+        }
+        [data-accent="amber"] {
+            --brand-primary: #f59e0b;
+            --brand-light: #fbbf24;
+            --brand-glow: rgba(245, 158, 11, 0.25);
+        }
+
+        /* Visual polish & editable outlines */
+        .glass-card {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        
+        .brand-shadow {
+            box-shadow: 0 0 35px -5px var(--brand-glow);
+        }
+
+        .edit-mode-active [contenteditable="true"] {
+            outline: 2px dashed var(--brand-primary);
+            outline-offset: 4px;
+            border-radius: 0.375rem;
+            background-color: var(--brand-glow);
+            cursor: text;
+            transition: all 0.2s ease;
+        }
+
+        .edit-mode-active [contenteditable="true"]:focus {
+            outline: 2px solid var(--brand-light);
+            background-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--brand-primary);
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.35; transform: scale(1); }
+            50% { opacity: 0.65; transform: scale(1.06); }
+        }
+        .animate-glow {
+            animation: pulse-slow 6s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-300 overflow-x-hidden" data-accent="indigo">
+
+    <!-- Background Decorative Grid & Glows -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl animate-glow" style="background: var(--brand-glow);"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 rounded-full blur-3xl animate-glow" style="background: var(--brand-glow); animation-delay: 2s;"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+    </div>
+
+    <!-- Top Notification Banner when Live Edit Mode is On -->
+    <div id="editBanner" class="hidden fixed top-0 inset-x-0 z-50 bg-amber-500 text-slate-950 text-xs sm:text-sm font-semibold py-2 px-4 text-center shadow-md flex items-center justify-center gap-3">
+        <span><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> <strong>Live Edit Mode Active:</strong> Click any highlighted text on the page to rewrite it directly!</span>
+        <button onclick="toggleEditMode()" class="bg-slate-950 text-white px-3 py-1 rounded-full text-xs hover:bg-slate-800 transition">Done Editing</button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header id="navbar" class="sticky top-0 z-40 w-full glass-card bg-white/75 dark:bg-slate-950/75 border-b border-slate-200/80 dark:border-slate-800/80 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-mono font-bold text-lg shadow-lg transition-transform group-hover:scale-105" style="background-color: var(--brand-primary);">
+                    JK
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight block leading-none editable-text" id="navName">Jay Keshri</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 editable-text" id="navTag">AI & ML Freelancer</span>
+                </div>
+            </a>
+
+            <!-- Desktop Links -->
+            <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
+                <a href="#services" class="hover:text-slate-950 dark:hover:text-white transition">Services</a>
+                <a href="#projects" class="hover:text-slate-950 dark:hover:text-white transition">Projects</a>
+                <a href="#interactive-rag" class="hover:text-slate-950 dark:hover:text-white transition">AI Architecture</a>
+                <a href="#skills" class="hover:text-slate-950 dark:hover:text-white transition">Skills</a>
+                <a href="#experience" class="hover:text-slate-950 dark:hover:text-white transition">Credentials</a>
+                <a href="#estimator" class="hover:text-slate-950 dark:hover:text-white transition">Pricing</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Customize Toggle Button -->
+                <!-- <button onclick="toggleCustomizer()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 hover:border-slate-400 dark:hover:border-slate-500 transition shadow-sm" title="Customize Website">
+                    <i class="fa-solid fa-sliders" style="color: var(--brand-primary);"></i>
+                    <span class="hidden sm:inline">Customize</span>
+                </button> -->
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition" aria-label="Toggle theme">
+                    <i id="themeIcon" class="fa-solid fa-sun text-amber-400"></i>
+                </button>
+
+                <!-- Hire Me CTA -->
+                <a href="#contact" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-md hover:opacity-95 transition flex items-center gap-2" style="background-color: var(--brand-primary);">
+                    <span>Hire Me</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10">
+        <!-- HERO SECTION -->
+        <section class="pt-12 pb-20 md:pt-20 md:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Left Column: Intro & CTAs -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Freelance Availability Badge -->
+                    <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span class="editable-text" id="heroBadge">AVAILABLE FOR FREELANCE & CONTRACT PROJECTS</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12]">
+                        Building Production-Grade <span class=" bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 editable-text" style="color: var(--brand-primary);" id="heroHighlight">RAG Systems & Custom AI</span> Pipelines.
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed editable-text" id="heroBio">
+                        Hi, I'm <strong>Jay Keshri</strong> — a Data Scientist, AI & Machine Learning Engineer, and <strong>Smart India Hackathon (SIH) National Finalist</strong> based in Ranchi, India. I help startups and enterprises turn unstructured data into intelligent LLM chatbots, voice-enabled AI assistants, and automated predictive ML pipelines.
+                    </p>
+
+                    <!-- Key Quick Coordinates -->
+                    <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono pt-1">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot" style="color: var(--brand-primary);"></i> <span class="editable-text" id="heroLocation">Ranchi, Jharkhand, India (Remote Worldwide)</span></span>
+                        <span class="hidden sm:inline">•</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-trophy text-amber-400"></i> <span class="editable-text">SIH National Finalist</span></span>
+                    </div>
+
+                    <!-- Primary Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-3">
+                        <a href="#contact" class="px-6 py-3.5 rounded-xl font-semibold text-white shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2.5 brand-shadow" style="background-color: var(--brand-primary);">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span class="editable-text">Book a Free AI Consultation</span>
+                        </a>
+                        <a href="#projects" class="px-6 py-3.5 rounded-xl font-semibold border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+                            <i class="fa-solid fa-code-branch"></i>
+                            <span>Explore Case Studies</span>
+                        </a>
+                        <button onclick="copyPhone()" class="p-3.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-600 dark:text-slate-300" title="Copy Phone: +91 8709024475">
+                            <i class="fa-solid fa-phone"></i>
+                        </button>
+                    </div>
+
+                    <!-- Social Links Bar -->
+                    <div class="pt-4 flex items-center gap-5 text-slate-500 dark:text-slate-400">
+                        <span class="text-xs font-mono uppercase tracking-wider">Connect:</span>
+                        <a id="linkGithub" href="https://github.com/Jay8262-rgb" target="_blank" rel="noopener noreferrer" class="hover:text-slate-900 dark:hover:text-white transition text-xl" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <a id="linkLinkedin" href="https://www.linkedin.com/in/jay-keshri/" target="_blank" rel="noopener noreferrer" class="hover:text-slate-900 dark:hover:text-white transition text-xl" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                        <a id="linkEmail" href="mailto:jay.keshri.dsai@gamil.com" class="hover:text-slate-900 dark:hover:text-white transition text-xl" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                        <a id="linkPhone" href="tel:+918709024475" class="hover:text-slate-900 dark:hover:text-white transition text-sm font-mono flex items-center gap-1.5 border border-slate-200 dark:border-slate-800 px-3 py-1 rounded-lg">
+                            <i class="fa-brands fa-whatsapp text-emerald-500"></i>
+                            <span class="editable-text" id="heroPhoneText">+91 8709024475</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive Terminal & Freelancer Profile Card -->
+                <div class="lg:col-span-5">
+                    <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 shadow-2xl overflow-hidden brand-shadow">
+                        <!-- Terminal Header -->
+                        <div class="px-4 py-3 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            </div>
+                            <span class="text-xs font-mono text-slate-400">jay_keshri_ai_agent.py</span>
+                            <span class="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400">Python 3.11</span>
+                        </div>
+
+                        <!-- Terminal Code Preview -->
+                        <div class="p-6 font-mono text-xs sm:text-sm space-y-3 bg-slate-950 text-slate-300 leading-relaxed">
+                            <div><span class="text-purple-400">from</span> langchain_community.vectorstores <span class="text-purple-400">import</span> FAISS, Chroma</div>
+                            <div><span class="text-purple-400">from</span> langchain_community.llms <span class="text-purple-400">import</span> Ollama</div>
+                            <div><span class="text-purple-400">import</span> whisper, sklearn</div>
+                            <div class="pt-2"><span class="text-sky-400">class</span> <span class="text-amber-300">FreelanceAIEngineer</span>:</div>
+                            <div class="pl-4"><span class="text-sky-400">def</span> <span class="text-emerald-400">__init__</span>(self):</div>
+                            <div class="pl-8">self.name = <span class="text-amber-200">"Jay Keshri"</span></div>
+                            <div class="pl-8">self.role = <span class="text-amber-200">"Data Scientist | AI & ML Engineer"</span></div>
+                            <div class="pl-8">self.recognition = <span class="text-amber-200">"SIH National Finalist 🏆"</span></div>
+                            <div class="pl-8">self.core_stack = [<span class="text-amber-200">"Python"</span>, <span class="text-amber-200">"LangChain"</span>, <span class="text-amber-200">"RAG"</span>, <span class="text-amber-200">"LLMs"</span>, <span class="text-amber-200">"Scikit-Learn"</span>]</div>
+                            <div class="pl-4 pt-1"><span class="text-sky-400">def</span> <span class="text-emerald-400">deliver_client_value</span>(self, problem):</div>
+                            <div class="pl-8"><span class="text-slate-500"># Grounded AI with minimal hallucination</span></div>
+                            <div class="pl-8"><span class="text-purple-400">return</span> <span class="text-amber-200">"Production-Ready Intelligent Pipeline 🚀"</span></div>
+                        </div>
+
+                        <!-- Bottom Quick Metrics Bar -->
+                        <div class="grid grid-cols-3 divide-x divide-slate-200 dark:divide-slate-800 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 text-center">
+                            <div>
+                                <div class="text-xl sm:text-2xl font-extrabold" style="color: var(--brand-primary);">End-to-End</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">RAG & ML Pipelines</div>
+                            </div>
+                            <div>
+                                <div class="text-xl sm:text-2xl font-extrabold" style="color: var(--brand-primary);">SIH</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">National Finalist</div>
+                            </div>
+                            <div>
+                                <div class="text-xl sm:text-2xl font-extrabold" style="color: var(--brand-primary);">24/7</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">Global Remote</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FREELANCE SERVICES SECTION -->
+        <section id="services" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/70 dark:border-slate-800/70">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20" style="color: var(--brand-primary);">What I Offer Clients</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold mt-3 editable-text">Specialized AI & ML Freelance Services</h2>
+                </div>
+                <p class="text-slate-600 dark:text-slate-400 max-w-md text-sm editable-text">
+                    Custom-engineered solutions tailored for businesses looking to integrate Generative AI, voice intelligence, or predictive modeling.
+                </p>
+            </div>
+
+            <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Service 1 -->
+                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-indigo-500/50 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-5 text-white shadow-md" style="background-color: var(--brand-primary);">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 editable-text">Custom RAG Chatbots & LLM Agents</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 editable-text">
+                            Connect your PDFs, docs, and private databases to LLMs (Ollama, OpenAI, Hugging Face) using LangChain, FAISS, and ChromaDB with zero hallucination.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-500">
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">LangChain</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">FAISS</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">ChromaDB</span>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-indigo-500/50 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-5 text-white shadow-md" style="background-color: var(--brand-primary);">
+                            <i class="fa-solid fa-microphone-lines"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 editable-text">Speech-to-Text & Voice AI Pipelines</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 editable-text">
+                            Build conversational voice assistants powered by OpenAI Whisper and NLP transformers to transcribe, analyze, and answer spoken queries in real time.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-500">
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">Whisper</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">Transformers</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">NLP</span>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-indigo-500/50 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-5 text-white shadow-md" style="background-color: var(--brand-primary);">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 editable-text">Predictive Machine Learning Models</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 editable-text">
+                            End-to-end supervised learning pipelines—from data cleaning and feature engineering to XGBoost/Random Forest training, cross-validation, and Joblib serialization.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-500">
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">Scikit-learn</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">XGBoost</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">Joblib</span>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-indigo-500/50 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-5 text-white shadow-md" style="background-color: var(--brand-primary);">
+                            <i class="fa-solid fa-server"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 editable-text">Full-Stack AI API Integration</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4 editable-text">
+                            Wrap trained ML models and Generative AI workflows into scalable REST APIs with React dashboards, Node.js/Express backends, and SQL/MongoDB storage.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-500">
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">REST API</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">React</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">MongoDB</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE AI ARCHITECTURE SIMULATOR -->
+        <section id="interactive-rag" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">Interactive Architecture Demo</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold mt-3">How My End-to-End Voice RAG Pipeline Works</h2>
+                        <p class="text-slate-400 text-sm mt-1">Click any stage below or press "Simulate Query" to inspect how I architect production AI systems for clients.</p>
+                    </div>
+                    <button onclick="simulateRagFlow()" id="simBtn" class="self-start lg:self-auto px-5 py-3 rounded-xl font-semibold text-sm text-white shadow-lg flex items-center gap-2 transition hover:opacity-90" style="background-color: var(--brand-primary);">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Simulate Live Voice Query</span>
+                    </button>
+                </div>
+
+                <!-- 5-Step Pipeline Nodes -->
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 relative">
+                    <button onclick="selectRagStep(0)" id="ragNode0" class="rag-node text-left p-4 rounded-2xl border border-indigo-500 bg-indigo-500/10 transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-indigo-400">STEP 01</span>
+                            <i class="fa-solid fa-microphone text-indigo-400"></i>
+                        </div>
+                        <div class="font-bold text-sm">Audio Ingestion</div>
+                        <div class="text-xs text-slate-400 mt-1">OpenAI Whisper STT</div>
+                    </button>
+
+                    <button onclick="selectRagStep(1)" id="ragNode1" class="rag-node text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/80 transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-slate-400">STEP 02</span>
+                            <i class="fa-solid fa-scissors text-emerald-400"></i>
+                        </div>
+                        <div class="font-bold text-sm">Semantic Chunking</div>
+                        <div class="text-xs text-slate-400 mt-1">LangChain Splitters</div>
+                    </button>
+
+                    <button onclick="selectRagStep(2)" id="ragNode2" class="rag-node text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/80 transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-slate-400">STEP 03</span>
+                            <i class="fa-solid fa-cubes text-cyan-400"></i>
+                        </div>
+                        <div class="font-bold text-sm">Vector Embeddings</div>
+                        <div class="text-xs text-slate-400 mt-1">FAISS & ChromaDB</div>
+                    </button>
+
+                    <button onclick="selectRagStep(3)" id="ragNode3" class="rag-node text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/80 transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-slate-400">STEP 04</span>
+                            <i class="fa-solid fa-magnifying-glass-chart text-amber-400"></i>
+                        </div>
+                        <div class="font-bold text-sm">Cosine Similarity</div>
+                        <div class="text-xs text-slate-400 mt-1">Top-K Context Retrieval</div>
+                    </button>
+
+                    <button onclick="selectRagStep(4)" id="ragNode4" class="rag-node text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/80 transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-slate-400">STEP 05</span>
+                            <i class="fa-solid fa-brain text-rose-400"></i>
+                        </div>
+                        <div class="font-bold text-sm">Grounded LLM</div>
+                        <div class="text-xs text-slate-400 mt-1">Ollama Response</div>
+                    </button>
+                </div>
+
+                <!-- Step Output Inspection Box -->
+                <div class="mt-6 p-5 rounded-2xl bg-slate-950/90 border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="text-xs font-mono uppercase text-indigo-400" id="ragDetailTag">STAGE 1: SPEECH RECOGNITION</div>
+                        <h4 class="text-lg font-bold" id="ragDetailTitle">OpenAI Whisper Speech-to-Text Transcription</h4>
+                        <p class="text-sm text-slate-300" id="ragDetailDesc">Captures spoken user queries in noisy environments and converts raw audio waveforms into high-accuracy normalized text tokens ready for semantic retrieval.</p>
+                    </div>
+                    <div class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-400 shrink-0" id="ragDetailCode">
+                        whisper.load_model("base").transcribe(audio_stream)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURED PROJECTS / CASE STUDIES -->
+        <section id="projects" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/70 dark:border-slate-800/70">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20" style="color: var(--brand-primary);">Proven Track Record</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold mt-3 editable-text">Featured Engineering Case Studies</h2>
+                </div>
+                <button onclick="openAddProjectModal()" class="self-start sm:self-auto px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border border-slate-300 dark:border-slate-700 hover:border-indigo-500 transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus" style="color: var(--brand-primary);"></i>
+                    <span>Add Custom Project</span>
+                </button>
+            </div>
+
+            <div id="projectsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Project 1: RAG Chatbot -->
+                <article class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 overflow-hidden shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent">
+                            <div class="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-3">
+                                <span class="px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 font-semibold">GENERATIVE AI & NLP</span>
+                                <span class="editable-text">Jan 2024 – May 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-bold editable-text">RAG-Powered Conversational AI Chatbot</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 editable-text">
+                                <strong>Problem Solved:</strong> Existing Q&A systems lacked the ability to process spoken audio queries and retrieve contextually accurate answers from unstructured knowledge bases.
+                            </p>
+                        </div>
+
+                        <div class="p-6 sm:p-8 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Engineered an end-to-end AI pipeline integrating <strong>OpenAI Whisper</strong> for speech-to-text transcription, enabling voice-based querying of a document knowledge base.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Implemented a <strong>Retrieval-Augmented Generation (RAG)</strong> architecture using LangChain, generating vector embeddings and performing cosine similarity search via <strong>FAISS / ChromaDB</strong>.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Integrated an <strong>Ollama Large Language Model (LLM)</strong> as the generative backbone, producing context-aware, grounded responses with reduced hallucination.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Architected a modular pipeline covering audio ingestion → semantic chunking → embedding generation → vector search → LLM response.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 sm:px-8 py-5 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200/70 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex flex-wrap gap-1.5 text-xs font-mono">
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Python</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Whisper</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">LangChain</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Ollama</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">FAISS</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">ChromaDB</span>
+                        </div>
+                        <a href="#contact" class="text-xs font-semibold flex items-center gap-1.5 hover:underline" style="color: var(--brand-primary);">
+                            <span>Request Similar Build</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Project 2: California Housing ML Pipeline -->
+                <article class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 overflow-hidden shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-emerald-500/10 via-cyan-500/5 to-transparent">
+                            <div class="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-3">
+                                <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold">PREDICTIVE ML PIPELINE</span>
+                                <span class="editable-text">Aug 2023 – Dec 2023</span>
+                            </div>
+                            <h3 class="text-2xl font-bold editable-text">California House Price Prediction — End-to-End ML Pipeline</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 editable-text">
+                                <strong>Problem Solved:</strong> Real estate price estimation lacked automated, reproducible prediction pipelines, requiring manual analysis prone to inconsistency.
+                            </p>
+                        </div>
+
+                        <div class="p-6 sm:p-8 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Developed a full ML pipeline encompassing data preprocessing, feature engineering, model training, and serialized deployment using the California Housing Dataset.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Implemented and benchmarked three supervised learning models — <strong>Linear Regression, Decision Tree, and Random Forest</strong> — applying <strong>k-fold Cross-Validation</strong> for statistically robust selection.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Applied feature engineering techniques including outlier handling, normalization, and correlation-based feature selection, improving generalization on unseen data.</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                                <span class="editable-text">Serialized the best-performing Random Forest model and preprocessing pipeline using <strong>Joblib</strong>, enabling fast, reusable inference in production workflows.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 sm:px-8 py-5 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200/70 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex flex-wrap gap-1.5 text-xs font-mono">
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Python</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Pandas</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">NumPy</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Scikit-learn</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Matplotlib</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Joblib</span>
+                        </div>
+                        <a href="#contact" class="text-xs font-semibold flex items-center gap-1.5 hover:underline" style="color: var(--brand-primary);">
+                            <span>Request Similar Build</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- TECHNICAL SKILLS ARSENAL -->
+        <section id="skills" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/70 dark:border-slate-800/70">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20" style="color: var(--brand-primary);">Technical Stack</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold mt-3 editable-text">Skills & Tools Arsenal</h2>
+                </div>
+                <!-- Category Filter Pills -->
+                <div class="flex flex-wrap gap-2" id="skillFilters">
+                    <button onclick="filterSkills('all')" data-filter="all" class="skill-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white transition" style="background-color: var(--brand-primary);">All Skills</button>
+                    <button onclick="filterSkills('genai')" data-filter="genai" class="skill-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:opacity-90 transition">GenAI & NLP</button>
+                    <button onclick="filterSkills('ml')" data-filter="ml" class="skill-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:opacity-90 transition">Machine Learning</button>
+                    <button onclick="filterSkills('data')" data-filter="data" class="skill-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:opacity-90 transition">Vector DB & Data</button>
+                    <button onclick="filterSkills('dev')" data-filter="dev" class="skill-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:opacity-90 transition">Languages & Web</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="skillsGrid">
+                <!-- Generative AI & LLMs -->
+                <div data-cat="genai" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-wand-magic-sparkles text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Generative AI & LLMs</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">LangChain</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Ollama</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">RAG Architecture</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Prompt Engineering</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Vector Embeddings</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Semantic Search</span>
+                    </div>
+                </div>
+
+                <!-- Deep Learning & NLP -->
+                <div data-cat="genai" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-language text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Deep Learning & NLP</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Whisper (OpenAI)</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Hugging Face</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Transformers</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Deep Learning</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">NLP Pipelines</span>
+                    </div>
+                </div>
+
+                <!-- Machine Learning -->
+                <div data-cat="ml" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-gears text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Machine Learning</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Scikit-learn</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">XGBoost</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Random Forest</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Decision Trees</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Linear Regression</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Cross-Validation</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Feature Engineering</span>
+                    </div>
+                </div>
+
+                <!-- Databases & Vector Stores -->
+                <div data-cat="data" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-database text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Databases & Vector Stores</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">FAISS</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">ChromaDB</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">SQL</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">MongoDB</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Firebase</span>
+                    </div>
+                </div>
+
+                <!-- Data & Visualization -->
+                <div data-cat="data" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-chart-pie text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Data & Visualization</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Pandas</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">NumPy</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Matplotlib</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Seaborn</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Excel</span>
+                    </div>
+                </div>
+
+                <!-- Programming Languages -->
+                <div data-cat="dev" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-code text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Programming Languages</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Python</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Java</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">R</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">JavaScript</span>
+                    </div>
+                </div>
+
+                <!-- Frameworks & APIs -->
+                <div data-cat="dev" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-network-wired text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Frameworks & APIs</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">REST API</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">React</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Node.js</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Express.js</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Joblib</span>
+                    </div>
+                </div>
+
+                <!-- Tools & Platforms -->
+                <div data-cat="dev" class="skill-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-screwdriver-wrench text-lg" style="color: var(--brand-primary);"></i>
+                        <h3 class="font-bold">Tools & Platforms</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Git & GitHub</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Jupyter Notebook</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">Google Colab</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 editable-text">VS Code</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACHIEVEMENTS, CERTIFICATIONS & EDUCATION -->
+        <section id="experience" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/70 dark:border-slate-800/70">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Left 7 Cols: Achievements & Certifications -->
+                <div class="lg:col-span-7 space-y-8">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">Recognition & Credentials</span>
+                        <h2 class="text-3xl font-bold mt-3 editable-text">Achievements & Certifications</h2>
+                    </div>
+
+                    <!-- SIH Highlight Card -->
+                    <div class="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent relative">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-xl font-bold shrink-0 shadow-lg">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-mono uppercase tracking-wider text-amber-500 font-semibold">National Level Honor</span>
+                                <h3 class="text-xl font-bold mt-1 editable-text">Smart India Hackathon (SIH) — National Finalist</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed editable-text">
+                                    Competed at the national level among thousands of teams across India, demonstrating exceptional problem-solving, AI application development, and collaborative engineering skills under high-pressure deadlines.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- R&D Achievement -->
+                    <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0" style="background-color: var(--brand-primary);">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold editable-text">Independent Generative AI R&D</h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 editable-text">
+                                Built a fully functional Generative AI RAG chatbot integrating speech recognition, vector search, and LLM inference as an independent research and development project.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Certifications List -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                            <i class="fa-solid fa-certificate text-amber-400 mb-2"></i>
+                            <div class="font-bold text-sm editable-text">Smart India Hackathon (SIH)</div>
+                            <div class="text-xs text-slate-500 mt-1 editable-text">National Finalist Certification</div>
+                        </div>
+                        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                            <i class="fa-solid fa-certificate text-indigo-400 mb-2"></i>
+                            <div class="font-bold text-sm editable-text">Data Science with Python</div>
+                            <div class="text-xs text-slate-500 mt-1 editable-text">CodeWithHarry</div>
+                        </div>
+                        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                            <i class="fa-solid fa-certificate text-emerald-400 mb-2"></i>
+                            <div class="font-bold text-sm editable-text">Python Programming</div>
+                            <div class="text-xs text-slate-500 mt-1 editable-text">CodeWithHarry</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right 5 Cols: Academic Timeline -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20" style="color: var(--brand-primary);">Academic Background</span>
+                        <h2 class="text-3xl font-bold mt-3 editable-text">Education</h2>
+                    </div>
+
+                    <div class="space-y-6 relative before:absolute before:top-4 before:bottom-4 before:left-5 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
+                        <!-- Degree 1 -->
+                        <div class="relative pl-12">
+                            <div class="w-4 h-4 rounded-full border-4 border-white dark:border-slate-950 absolute left-3.5 top-1.5" style="background-color: var(--brand-primary);"></div>
+                            <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                                <span class="text-xs font-mono text-slate-500 editable-text">Aug 2022 – May 2026</span>
+                                <h3 class="text-lg font-bold mt-1 editable-text">B.Tech in Computer Science & Engineering</h3>
+                                <div class="text-sm font-medium mt-0.5 editable-text" style="color: var(--brand-primary);">Sarala Birla University, Ranchi</div>
+                                <div class="mt-3 inline-block px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-mono editable-text">
+                                    CGPA: 6.85
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Degree 2 -->
+                        <div class="relative pl-12">
+                            <div class="w-4 h-4 rounded-full border-4 border-white dark:border-slate-950 bg-slate-400 absolute left-3.5 top-1.5"></div>
+                            <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+                                <span class="text-xs font-mono text-slate-500 editable-text">Aug 2020 – May 2022</span>
+                                <h3 class="text-lg font-bold mt-1 editable-text">Higher Secondary (PCM)</h3>
+                                <div class="text-sm text-slate-600 dark:text-slate-400 mt-0.5 editable-text">Plus 2 High School, Barhi</div>
+                                <div class="mt-3 inline-block px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-mono editable-text">
+                                    Score: 67.20%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE FREELANCE PROJECT ESTIMATOR & CONTACT -->
+        <section id="estimator" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/70 dark:border-slate-800/70">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <!-- Left 6 Cols: Interactive Project Scope Estimator -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20" style="color: var(--brand-primary);">This Feature Unable To Use This Time</span>
+                        <h2 class="text-3xl font-bold mt-3 editable-text">Estimate Your AI Project</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 editable-text">
+                            Select the components you need below to calculate an estimated timeline and populate your inquiry automatically.
+                        </p>
+                    </div>
+
+                    <div class="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 space-y-6 shadow-lg">
+                        <div>
+                            <label class="text-xs font-mono uppercase text-slate-500 block mb-3">1. Select Core Deliverable</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="scopeOptions">
+                                <button type="button" onclick="selectScope(this, 'RAG Knowledge Chatbot', 450)" class="scope-btn active p-3.5 rounded-xl border-2 text-left transition" style="border-color: var(--brand-primary); background: var(--brand-glow);">
+                                    <div class="font-bold text-sm">RAG Knowledge Chatbot</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">LangChain + Vector DB</div>
+                                </button>
+                                <button type="button" onclick="selectScope(this, 'Voice AI Assistant', 550)" class="scope-btn p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition">
+                                    <div class="font-bold text-sm">Voice AI Assistant</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">Whisper STT + LLM</div>
+                                </button>
+                                <button type="button" onclick="selectScope(this, 'Predictive ML Pipeline', 350)" class="scope-btn p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition">
+                                    <div class="font-bold text-sm">Predictive ML Model</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">Scikit-learn / XGBoost</div>
+                                </button>
+                                <button type="button" onclick="selectScope(this, 'Full-Stack AI Web App', 700)" class="scope-btn p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition">
+                                    <div class="font-bold text-sm">Full-Stack AI Web App</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">React + Node + AI API</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-mono uppercase text-slate-500 block mb-3">2. Optional Add-Ons</label>
+                            <div class="space-y-2.5 text-sm">
+                                <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                    <span class="flex items-center gap-2.5">
+                                        <input type="checkbox" class="addon-check accent-indigo-500 w-4 h-4" value="Whisper Speech-to-Text" data-cost="150" onchange="updateEstimate()">
+                                        <span>OpenAI Whisper Voice Transcription</span>
+                                    </span>
+                                    <span class="text-xs font-mono text-slate-500">+$150</span>
+                                </label>
+                                <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                    <span class="flex items-center gap-2.5">
+                                        <input type="checkbox" class="addon-check accent-indigo-500 w-4 h-4" value="REST API & React Dashboard" data-cost="200" onchange="updateEstimate()">
+                                        <span>REST API & React UI Dashboard</span>
+                                    </span>
+                                    <span class="text-xs font-mono text-slate-500">+$200</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-slate-100 dark:bg-slate-950 flex items-center justify-between">
+                            <div>
+                                <div class="text-xs font-mono text-slate-500">ESTIMATED STARTING BUDGET</div>
+                                <div class="text-2xl sm:text-3xl font-extrabold mt-0.5" id="estimatedPrice" style="color: var(--brand-primary);">$450 USD</div>
+                                <div class="text-xs text-slate-500 mt-0.5">Flexible milestone or hourly billing available</div>
+                            </div>
+                            <button type="button" onclick="applyEstimateToForm()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-white shadow transition hover:opacity-90" style="background-color: var(--brand-primary);">
+                                Copy to Inquiry →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right 6 Cols: Direct Contact Form -->
+                <div id="contact" class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="text-xs font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Let's Collaborate</span>
+                        <h2 class="text-3xl font-bold mt-3 editable-text">Start a Conversation</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 editable-text">
+                            Reach out directly for freelance projects, contract roles, or technical consultations.
+                        </p>
+                    </div>
+
+                    <form onsubmit="handleContactSubmit(event)" class="p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 space-y-4 shadow-lg">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-mono uppercase text-slate-500 mb-1.5">Your Name *</label>
+                                <input type="text" id="clientName" required placeholder="Alex Rivera" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono uppercase text-slate-500 mb-1.5">Your Email *</label>
+                                <input type="email" id="clientEmail" required placeholder="alex@company.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-slate-500 mb-1.5">Project Subject</label>
+                            <input type="text" id="clientSubject" placeholder="Custom RAG Chatbot / ML Pipeline Inquiry" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:outline-none focus:border-indigo-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-slate-500 mb-1.5">Project Details *</label>
+                            <textarea id="clientMessage" rows="4" required placeholder="Tell me about your dataset, goals, and timeline..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:outline-none focus:border-indigo-500"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-xl font-semibold text-white shadow-lg transition hover:opacity-95 flex items-center justify-center gap-2" style="background-color: var(--brand-primary);">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Prepare Email to Jay Keshri</span>
+                        </button>
+
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                            <span>Direct Phone / WhatsApp: <strong class="text-slate-700 dark:text-slate-300">+91 8709024475</strong></span>
+                            <span>Location: <strong class="text-slate-700 dark:text-slate-300">Ranchi, India</strong></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-10 px-4 sm:px-6 lg:px-8 mt-12 relative z-10">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-800 dark:text-slate-200 editable-text">Jay Keshri</span>
+                <span>— Data Scientist | AI & Machine Learning Engineer</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleCustomizer()" class="hover:underline" style="color: var(--brand-primary);">Open Customizer Studio</button>
+                <span>•</span>
+                <span>© 2026 All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SLIDE-OVER CUSTOMIZER STUDIO DRAWER -->
+    <div id="customizerDrawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Drawer Header -->
+        <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950">
+            <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-sliders text-lg" style="color: var(--brand-primary);"></i>
+                <div>
+                    <h3 class="font-bold text-base">Portfolio Customizer Studio</h3>
+                    <p class="text-xs text-slate-500">Personalize and export your website</p>
+                </div>
+            </div>
+            <button onclick="toggleCustomizer()" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Drawer Body -->
+        <div class="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
+            <!-- 1. On-Page Live Text Editing -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-bold">1. Direct On-Page Text Editor</div>
+                        <div class="text-xs text-slate-500">Click any text on the page to rewrite it</div>
+                    </div>
+                    <button onclick="toggleEditMode()" id="drawerEditBtn" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 hover:opacity-90 transition">
+                        Enable Edit Mode
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. Accent Color Theme -->
+            <div class="space-y-2.5">
+                <label class="text-xs font-mono uppercase text-slate-500 block">2. Brand Accent Color</label>
+                <div class="grid grid-cols-5 gap-2.5">
+                    <button onclick="setAccent('indigo')" class="h-10 rounded-xl bg-indigo-500 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center text-white" title="Indigo AI"></button>
+                    <button onclick="setAccent('emerald')" class="h-10 rounded-xl bg-emerald-500 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center text-white" title="Emerald Matrix"></button>
+                    <button onclick="setAccent('cyan')" class="h-10 rounded-xl bg-cyan-500 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center text-white" title="Cyan Cyber"></button>
+                    <button onclick="setAccent('rose')" class="h-10 rounded-xl bg-rose-500 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center text-white" title="Rose Neural"></button>
+                    <button onclick="setAccent('amber')" class="h-10 rounded-xl bg-amber-500 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center text-white" title="Amber Gold"></button>
+                </div>
+            </div>
+
+            <!-- 3. Quick Profile & Contact Links Updater -->
+            <div class="space-y-3">
+                <label class="text-xs font-mono uppercase text-slate-500 block">3. Update Contact & Social URLs</label>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Availability Status Badge</label>
+                    <input type="text" id="inputBadge" value="AVAILABLE FOR FREELANCE & CONTRACT PROJECTS" oninput="syncQuickFields()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Email Address</label>
+                    <input type="email" id="inputEmail" value="jaykeshri@gmail.com" oninput="syncQuickFields()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Phone / WhatsApp</label>
+                    <input type="text" id="inputPhone" value="+91 8709024475" oninput="syncQuickFields()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">GitHub Profile URL</label>
+                    <input type="url" id="inputGithub" value="https://github.com/" oninput="syncQuickFields()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">LinkedIn Profile URL</label>
+                    <input type="url" id="inputLinkedin" value="https://linkedin.com/in/" oninput="syncQuickFields()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
+                </div>
+            </div>
+
+            <!-- 4. Add New Project Shortcut -->
+            <div class="pt-2">
+                <button onclick="openAddProjectModal()" class="w-full py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 font-semibold text-xs flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-folder-plus" style="color: var(--brand-primary);"></i>
+                    <span>Add Another Case Study Card</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Drawer Footer: Export HTML -->
+        <div class="p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-2">
+            <button onclick="exportCustomizedHTML()" class="w-full py-3 rounded-xl font-semibold text-white text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 transition hover:opacity-95" style="background-color: var(--brand-primary);">
+                <i class="fa-solid fa-download"></i>
+                <span>Download Customized Website (.HTML)</span>
+            </button>
+            <button onclick="resetCustomizations()" class="w-full py-2 rounded-xl text-xs text-slate-500 hover:text-rose-500 transition">
+                Reset All Changes to Default
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL FOR ADDING A NEW PROJECT CARD -->
+    <div id="projectModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-bold">Add New Portfolio Project</h3>
+                <button onclick="closeAddProjectModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="text-xs font-mono text-slate-500 block mb-1">Project Category & Date</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input id="newProjCat" type="text" placeholder="COMPUTER VISION / LLM" class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                        <input id="newProjDate" type="text" placeholder="Jun 2024 – Present" class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-500 block mb-1">Project Title</label>
+                    <input id="newProjTitle" type="text" placeholder="Enterprise Document Intelligence Agent" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-500 block mb-1">Problem Statement</label>
+                    <input id="newProjProblem" type="text" placeholder="Manual document review took 40+ hours weekly..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-500 block mb-1">Key Highlights (One per line)</label>
+                    <textarea id="newProjBullets" rows="3" placeholder="Built vector indexing pipeline with FAISS&#10;Deployed REST API endpoint with 99.2% uptime" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-500 block mb-1">Tech Stack (Comma separated)</label>
+                    <input id="newProjStack" type="text" placeholder="Python, LangChain, FastAPI, Docker" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button onclick="closeAddProjectModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">Cancel</button>
+                <button onclick="saveNewProject()" class="px-5 py-2 rounded-xl text-xs font-semibold text-white" style="background-color: var(--brand-primary);">Add to Portfolio</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl bg-slate-900 text-white border border-slate-700 shadow-2xl text-xs sm:text-sm font-medium flex items-center gap-2.5 opacity-0 pointer-events-none transition-all duration-300">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg">Saved!</span>
+    </div>
+
+    <script>
+        // --- 1. THEME & ACCENT CONTROLS ---
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            html.classList.toggle('dark');
+            if (html.classList.contains('dark')) {
+                icon.className = 'fa-solid fa-sun text-amber-400';
+            } else {
+                icon.className = 'fa-solid fa-moon text-slate-700';
+            }
+        }
+
+        function setAccent(accentName) {
+            document.body.setAttribute('data-accent', accentName);
+            localStorage.setItem('jk_portfolio_accent', accentName);
+            showToast(`Theme accent updated to ${accentName.toUpperCase()}`);
+        }
+
+        // --- 2. CUSTOMIZER DRAWER & INLINE EDITING ---
+        let isEditMode = false;
+
+        function toggleCustomizer() {
+            const drawer = document.getElementById('customizerDrawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const editables = document.querySelectorAll('.editable-text');
+            const banner = document.getElementById('editBanner');
+            const btn = document.getElementById('drawerEditBtn');
+
+            document.body.classList.toggle('edit-mode-active', isEditMode);
+            banner.classList.toggle('hidden', !isEditMode);
+
+            editables.forEach(el => {
+                el.setAttribute('contenteditable', isEditMode ? 'true' : 'false');
+            });
+
+            if (isEditMode) {
+                btn.textContent = 'Disable Edit Mode';
+                btn.classList.add('bg-amber-500', 'text-slate-950');
+                showToast('Live Edit Mode ON: Click any highlighted text to edit!');
+            } else {
+                btn.textContent = 'Enable Edit Mode';
+                btn.classList.remove('bg-amber-500', 'text-slate-950');
+                showToast('Changes applied to page!');
+            }
+        }
+
+        function syncQuickFields() {
+            const badge = document.getElementById('inputBadge').value;
+            const email = document.getElementById('inputEmail').value;
+            const phone = document.getElementById('inputPhone').value;
+            const github = document.getElementById('inputGithub').value;
+            const linkedin = document.getElementById('inputLinkedin').value;
+
+            document.getElementById('heroBadge').textContent = badge;
+            document.getElementById('heroPhoneText').textContent = phone;
+            document.getElementById('linkEmail').href = `mailto:${email}`;
+            document.getElementById('linkPhone').href = `tel:${phone.replace(/\s+/g, '')}`;
+            document.getElementById('linkGithub').href = github;
+            document.getElementById('linkLinkedin').href = linkedin;
+        }
+
+        // --- 3. INTERACTIVE RAG ARCHITECTURE SIMULATOR ---
+        const ragSteps = [
+            {
+                tag: "STAGE 1: SPEECH RECOGNITION",
+                title: "OpenAI Whisper Speech-to-Text Transcription",
+                desc: "Captures spoken user queries and converts raw audio waveforms into accurate normalized text tokens for downstream retrieval.",
+                code: 'whisper.load_model("base").transcribe(audio_query)'
+            },
+            {
+                tag: "STAGE 2: DOCUMENT PROCESSING",
+                title: "Semantic Document Chunking via LangChain",
+                desc: "Splits unstructured PDFs and enterprise knowledge bases into overlapping semantic chunks to preserve context boundaries.",
+                code: 'RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=64)'
+            },
+            {
+                tag: "STAGE 3: VECTOR INDEXING",
+                title: "Dense Vector Embeddings in FAISS & ChromaDB",
+                desc: "Transforms text chunks into high-dimensional vector representations stored in FAISS / ChromaDB for sub-millisecond lookup.",
+                code: 'vectorstore = FAISS.from_documents(chunks, embedding_model)'
+            },
+            {
+                tag: "STAGE 4: SEMANTIC RETRIEVAL",
+                title: "Cosine Similarity Search",
+                desc: "Computes cosine similarity between the transcribed query embedding and indexed vectors to fetch the top-K grounded facts.",
+                code: 'docs = vectorstore.similarity_search_with_score(query, k=4)'
+            },
+            {
+                tag: "STAGE 5: GROUNDED GENERATION",
+                title: "Context-Aware Ollama LLM Inference",
+                desc: "Anchors the Ollama Large Language Model strictly to the retrieved document chunks, eliminating hallucination.",
+                code: 'RetrievalQA.from_chain_type(llm=Ollama(model="llama3"), retriever=retriever)'
+            }
+        ];
+
+        function selectRagStep(index) {
+            const step = ragSteps[index];
+            document.getElementById('ragDetailTag').textContent = step.tag;
+            document.getElementById('ragDetailTitle').textContent = step.title;
+            document.getElementById('ragDetailDesc').textContent = step.desc;
+            document.getElementById('ragDetailCode').textContent = step.code;
+
+            for (let i = 0; i < 5; i++) {
+                const node = document.getElementById(`ragNode${i}`);
+                if (i === index) {
+                    node.className = "rag-node text-left p-4 rounded-2xl border-2 border-indigo-400 bg-indigo-500/20 transition transform -translate-y-1";
+                } else {
+                    node.className = "rag-node text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/80 transition hover:bg-slate-800/80";
+                }
+            }
+        }
+
+        let simInterval = null;
+        function simulateRagFlow() {
+            if (simInterval) clearInterval(simInterval);
+            let step = 0;
+            selectRagStep(0);
+            showToast("Simulating end-to-end Voice RAG Pipeline...");
+            simInterval = setInterval(() => {
+                step++;
+                if (step < 5) {
+                    selectRagStep(step);
+                } else {
+                    clearInterval(simInterval);
+                    showToast("RAG Pipeline response generated with 0% hallucination!");
+                }
+            }, 1100);
+        }
+
+        // --- 4. SKILLS FILTERING ---
+        function filterSkills(category) {
+            const cards = document.querySelectorAll('.skill-card');
+            const tabs = document.querySelectorAll('.skill-tab');
+
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-filter') === category) {
+                    tab.style.backgroundColor = 'var(--brand-primary)';
+                    tab.classList.add('text-white');
+                } else {
+                    tab.style.backgroundColor = '';
+                    tab.classList.remove('text-white');
+                }
+            });
+
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-cat') === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- 5. PROJECT SCOPE ESTIMATOR ---
+        let currentBaseScope = 'RAG Knowledge Chatbot';
+        let currentBaseCost = 450;
+
+        function selectScope(btn, title, cost) {
+            currentBaseScope = title;
+            currentBaseCost = cost;
+            document.querySelectorAll('.scope-btn').forEach(b => {
+                b.style.borderColor = '';
+                b.style.background = '';
+                b.className = 'scope-btn p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition';
+            });
+            btn.className = 'scope-btn active p-3.5 rounded-xl border-2 text-left transition';
+            btn.style.borderColor = 'var(--brand-primary)';
+            btn.style.background = 'var(--brand-glow)';
+            updateEstimate();
+        }
+
+        function updateEstimate() {
+            let total = currentBaseCost;
+            document.querySelectorAll('.addon-check:checked').forEach(chk => {
+                total += parseInt(chk.getAttribute('data-cost'), 10);
+            });
+            document.getElementById('estimatedPrice').textContent = `$${total} USD`;
+            return total;
+        }
+
+        function applyEstimateToForm() {
+            const total = updateEstimate();
+            const addons = [];
+            document.querySelectorAll('.addon-check:checked').forEach(chk => addons.push(chk.value));
+            const addonText = addons.length ? ` + Add-ons (${addons.join(', ')})` : '';
+
+            document.getElementById('clientSubject').value = `Project Inquiry: ${currentBaseScope} (~$${total} USD)`;
+            document.getElementById('clientMessage').value = `Hi Jay,\n\nI'm interested in hiring you to build a ${currentBaseScope}${addonText}.\nEstimated Budget: $${total} USD.\n\nHere are a few details about our dataset and timeline: `;
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+            showToast("Estimate copied into the contact form!");
+        }
+
+        // --- 6. ADD CUSTOM PROJECT MODAL ---
+        function openAddProjectModal() {
+            document.getElementById('projectModal').classList.remove('hidden');
+        }
+        function closeAddProjectModal() {
+            document.getElementById('projectModal').classList.add('hidden');
+        }
+        function saveNewProject() {
+            const cat = document.getElementById('newProjCat').value || 'AI & ML ENGINEERING';
+            const date = document.getElementById('newProjDate').value || '2025';
+            const title = document.getElementById('newProjTitle').value || 'Custom AI Solution';
+            const problem = document.getElementById('newProjProblem').value || 'Automated complex workflow with high accuracy.';
+            const bulletsRaw = document.getElementById('newProjBullets').value || 'Built end-to-end pipeline\nDeployed to production';
+            const stackRaw = document.getElementById('newProjStack').value || 'Python, LangChain, Scikit-learn';
+
+            const bulletsHtml = bulletsRaw.split('\n').filter(Boolean).map(b => `
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-circle-check mt-1 text-emerald-500"></i>
+                    <span class="editable-text">${b}</span>
+                </div>
+            `).join('');
+
+            const stackHtml = stackRaw.split(',').filter(Boolean).map(s => `
+                <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${s.trim()}</span>
+            `).join('');
+
+            const cardHtml = `
+                <article class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 overflow-hidden shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent">
+                            <div class="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-3">
+                                <span class="px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 font-semibold">${cat}</span>
+                                <span class="editable-text">${date}</span>
+                            </div>
+                            <h3 class="text-2xl font-bold editable-text">${title}</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 editable-text">
+                                <strong>Problem Solved:</strong> ${problem}
+                            </p>
+                        </div>
+                        <div class="p-6 sm:p-8 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                            ${bulletsHtml}
+                        </div>
+                    </div>
+                    <div class="px-6 sm:px-8 py-5 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200/70 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex flex-wrap gap-1.5 text-xs font-mono">${stackHtml}</div>
+                        <a href="#contact" class="text-xs font-semibold flex items-center gap-1.5 hover:underline" style="color: var(--brand-primary);">
+                            <span>Request Similar Build</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            `;
+
+            document.getElementById('projectsContainer').insertAdjacentHTML('beforeend', cardHtml);
+            closeAddProjectModal();
+            showToast("New project card added to portfolio!");
+        }
+
+        // --- 7. CONTACT FORM, CLIPBOARD & EXPORT ---
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('clientName').value;
+            const email = document.getElementById('clientEmail').value;
+            const subject = document.getElementById('clientSubject').value || 'Freelance AI Project Inquiry';
+            const message = document.getElementById('clientMessage').value;
+            const destEmail = document.getElementById('inputEmail').value || 'jaykeshri@gmail.com';
+
+            const mailtoLink = `mailto:${destEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`From: ${name} (${email})\n\n${message}`)}`;
+            window.location.href = mailtoLink;
+            showToast("Opening your email client to send message!");
+        }
+
+        function copyPhone() {
+            const phone = document.getElementById('heroPhoneText').textContent;
+            const tempInput = document.createElement('input');
+            tempInput.value = phone;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`Copied phone number: ${phone}`);
+        }
+
+        function exportCustomizedHTML() {
+            if (isEditMode) toggleEditMode();
+            const drawer = document.getElementById('customizerDrawer');
+            drawer.classList.add('translate-x-full');
+
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'jay-keshri-freelance-portfolio.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Downloaded your customized HTML portfolio!");
+        }
+
+        function resetCustomizations() {
+            localStorage.removeItem('jk_portfolio_accent');
+            window.location.reload();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3200);
+        }
+
+        window.onload = function () {
+            const savedAccent = localStorage.getItem('jk_portfolio_accent');
+            if (savedAccent) {
+                document.body.setAttribute('data-accent', savedAccent);
+            }
+        };
+    </script>
+</body>
+</html>
